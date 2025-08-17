@@ -1,0 +1,71 @@
+-- =========================================================
+--  Gym Management System – Complete SQL Schema
+--  Generated 2025-08-18
+-- =========================================================
+
+-- ---------------------------------------------------------
+-- 1.  Members – gym clients
+-- ---------------------------------------------------------
+CREATE TABLE Members (
+    member_id       INT AUTO_INCREMENT PRIMARY KEY,
+    name            VARCHAR(255) NOT NULL,
+    contact_number  VARCHAR(15),
+    email           VARCHAR(255),
+    membership_type VARCHAR(50),
+    start_date      DATE
+);
+
+-- ---------------------------------------------------------
+-- 2.  Trainers – who teach
+-- ---------------------------------------------------------
+CREATE TABLE Trainers (
+    trainer_id      INT AUTO_INCREMENT PRIMARY KEY,
+    name            VARCHAR(255) NOT NULL,
+    speciality      VARCHAR(255),
+    Contact_number  VARCHAR(15)
+);
+
+-- ---------------------------------------------------------
+-- 3.  Classes – schedule
+-- ---------------------------------------------------------
+CREATE TABLE Classes (
+    class_id    INT AUTO_INCREMENT PRIMARY KEY,
+    class_name  VARCHAR(255) NOT NULL,
+    trainer_id  INT,
+    time        TIME,
+    FOREIGN KEY (trainer_id) REFERENCES Trainers(trainer_id)
+);
+
+-- ---------------------------------------------------------
+-- 4.  Attendance – member presence in classes
+-- ---------------------------------------------------------
+CREATE TABLE Attendance (
+    attendance_id INT AUTO_INCREMENT PRIMARY KEY,
+    member_id     INT,
+    class_id      INT,
+    date          DATE,
+    FOREIGN KEY (member_id) REFERENCES Members(member_id),
+    FOREIGN KEY (class_id)  REFERENCES Classes(class_id)
+);
+
+-- ---------------------------------------------------------
+-- 5.  Payments – money trail
+-- ---------------------------------------------------------
+CREATE TABLE Payments (
+    payment_id   INT AUTO_INCREMENT PRIMARY KEY,
+    member_id    INT,
+    amount       DECIMAL(10,2),
+    payment_date DATE,
+    FOREIGN KEY (member_id) REFERENCES Members(member_id)
+);
+
+-- ---------------------------------------------------------
+-- 6.  Users – staff logins (bcrypt hashes)
+-- ---------------------------------------------------------
+CREATE TABLE Users (
+    user_id       INT AUTO_INCREMENT PRIMARY KEY,
+    username      VARCHAR(50) UNIQUE NOT NULL,
+    password_hash VARCHAR(255)       NOT NULL,
+    role          ENUM('admin','receptionist') NOT NULL
+);
+

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Gym Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('index') }}" class="nav-back">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Back to Dashboard
+        </a>
+        
+        <div class="header">
+            <h1>📊 Reports & Analytics</h1>
+            <p>Comprehensive insights into your gym's performance</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="analytics-grid">
+            <div class="analytics-card revenue">
+                <div class="analytics-icon">💰</div>
+                <div class="analytics-content">
+                    <h3>Monthly Revenue</h3>
+                    <div class="analytics-value">${{ reports.monthly_revenue or 0 }}</div>
+                    <div class="analytics-change positive">{{ reports.revenue_growth or 0 }}% growth</div>
+                </div>
+            </div>
+
+            <div class="analytics-card members">
+                <div class="analytics-icon">👥</div>
+                <div class="analytics-content">
+                    <h3>Member Growth</h3>
+                    <div class="analytics-value">{{ reports.member_growth or 0 }}</div>
+                    <div class="analytics-change positive">New this month</div>
+                </div>
+            </div>
+
+            <div class="analytics-card attendance">
+                <div class="analytics-icon">📈</div>
+                <div class="analytics-content">
+                    <h3>Avg. Attendance</h3>
+                    <div class="analytics-value">{{ reports.avg_attendance or 0 }}%</div>
+                    <div class="analytics-change">Daily average</div>
+                </div>
+            </div>
+
+            <div class="analytics-card classes">
+                <div class="analytics-icon">🏃</div>
+                <div class="analytics-content">
+                    <h3>Class Utilization</h3>
+                    <div class="analytics-value">{{ reports.class_utilization or 0 }}%</div>
+                    <div class="analytics-change">Capacity used</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Reports -->
+        <div class="content-section">
+            <h2 class="section-title">Revenue Analysis</h2>
+            <div class="report-grid">
+                <div class="report-card">
+                    <h3>Monthly Revenue Breakdown</h3>
+                    {% if monthly_payments %}
+                        <div class="revenue-list">
+                            {% for month_data in monthly_payments %}
+                            <div class="revenue-item">
+                                <div class="revenue-month">{{ month_data.month }}</div>
+                                <div class="revenue-amount">${{ month_data.total }}</div>
+                                <div class="revenue-count">{{ month_data.count }} payments</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state-small">No revenue data available</div>
+                    {% endif %}
+                </div>
+
+                <div class="report-card">
+                    <h3>Membership Type Distribution</h3>
+                    {% if membership_stats %}
+                        <div class="membership-stats">
+                            {% for stat in membership_stats %}
+                            <div class="membership-item">
+                                <div class="membership-type">{{ stat.type }}</div>
+                                <div class="membership-count">{{ stat.count }} members</div>
+                                <div class="membership-percentage">{{ stat.percentage }}%</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state-small">No membership data available</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Attendance Reports</h2>
+            <div class="report-grid">
+                <div class="report-card">
+                    <h3>Class Popularity</h3>
+                    {% if class_popularity %}
+                        <div class="popularity-list">
+                            {% for class_data in class_popularity %}
+                            <div class="popularity-item">
+                                <div class="class-info">
+                                    <strong>{{ class_data.name }}</strong>
+                                    <span>{{ class_data.time }}</span>
+                                </div>
+                                <div class="attendance-count">{{ class_data.attendance }} attendees</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state-small">No class data available</div>
+                    {% endif %}
+                </div>
+
+                <div class="report-card">
+                    <h3>Trainer Performance</h3>
+                    {% if trainer_performance %}
+                        <div class="trainer-stats">
+                            {% for trainer in trainer_performance %}
+                            <div class="trainer-item">
+                                <div class="trainer-info">
+                                    <strong>{{ trainer.name }}</strong>
+                                    <span>{{ trainer.specialty }}</span>
+                                </div>
+                                <div class="trainer-classes">{{ trainer.classes }} classes</div>
+                                <div class="trainer-rating">{{ trainer.avg_attendance }}% avg attendance</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state-small">No trainer data available</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

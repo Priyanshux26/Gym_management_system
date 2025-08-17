@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Gym Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1>👨‍💼 Admin Dashboard</h1>
+                    <p>Welcome back, {{ current_user.username }}! Here's your gym overview</p>
+                </div>
+                <div class="header-actions">
+                    <span class="user-badge">Admin</span>
+                    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Cards -->
+        <div class="analytics-grid">
+            <div class="analytics-card revenue">
+                <div class="analytics-icon">💰</div>
+                <div class="analytics-content">
+                    <h3>Total Revenue</h3>
+                    <div class="analytics-value">${{ analytics.total_revenue or 0 }}</div>
+                    <div class="analytics-change positive">+12% from last month</div>
+                </div>
+            </div>
+
+            <div class="analytics-card members">
+                <div class="analytics-icon">👥</div>
+                <div class="analytics-content">
+                    <h3>Active Members</h3>
+                    <div class="analytics-value">{{ analytics.total_members or 0 }}</div>
+                    <div class="analytics-change positive">+{{ analytics.new_members_this_month or 0 }} this month</div>
+                </div>
+            </div>
+
+            <div class="analytics-card classes">
+                <div class="analytics-icon">🏃</div>
+                <div class="analytics-content">
+                    <h3>Total Classes</h3>
+                    <div class="analytics-value">{{ analytics.total_classes or 0 }}</div>
+                    <div class="analytics-change">{{ analytics.total_trainers or 0 }} trainers</div>
+                </div>
+            </div>
+
+            <div class="analytics-card attendance">
+                <div class="analytics-icon">📊</div>
+                <div class="analytics-content">
+                    <h3>Today's Attendance</h3>
+                    <div class="analytics-value">{{ analytics.today_attendance or 0 }}</div>
+                    <div class="analytics-change">{{ analytics.attendance_rate or 0 }}% rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-section">
+            <h2 class="section-title">Recent Activity</h2>
+            <div class="activity-grid">
+                <div class="activity-card">
+                    <h3>Recent Payments</h3>
+                    {% if recent_payments %}
+                        <div class="activity-list">
+                            {% for payment in recent_payments %}
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <strong>Member #{{ payment[1] }}</strong>
+                                    <span class="activity-date">{{ payment[3] }}</span>
+                                </div>
+                                <div class="activity-amount">${{ payment[2] }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state-small">No recent payments</div>
+                    {% endif %}
+                </div>
+
+                <div class="activity-card">
+                    <h3>New Members</h3>
+                    {% if recent_members %}
+                        <div class="activity-list">
+                            {% for member in recent_members %}
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <strong>{{ member[1] }}</strong>
+                                    <span class="activity-date">{{ member[5] }}</span>
+                                </div>
+                                <div class="activity-badge">{{ member[4] }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state-small">No new members</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Cards -->
+        <div class="management-section">
+            <h2 class="section-title">Management</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h2>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        Members
+                    </h2>
+                    <p>Manage gym members, memberships, and member information.</p>
+                    <a href="{{ url_for('members') }}" class="card-link">
+                        Manage Members
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <h2>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        Trainers
+                    </h2>
+                    <p>Manage trainer profiles, specialties, and assignments.</p>
+                    <a href="{{ url_for('trainers') }}" class="card-link">
+                        Manage Trainers
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <h2>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                        Classes
+                    </h2>
+                    <p>Schedule classes, assign trainers, and manage timings.</p>
+                    <a href="{{ url_for('classes') }}" class="card-link">
+                        Manage Classes
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <h2>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                        </svg>
+                        Payments
+                    </h2>
+                    <p>Track payments, revenue, and financial records.</p>
+                    <a href="{{ url_for('payments') }}" class="card-link">
+                        View Payments
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <h2>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2.5-9H19v2h-1.5v16.5c0 1.1-.9 2-2 2h-11c-1.1 0-2-.9-2-2V4H1V2h3.5c0-1.1.9-2 2-2h7c1.1 0 2 .9 2 2zm-3 0h-7v16h7V2z"/>
+                        </svg>
+                        Attendance
+                    </h2>
+                    <p>Monitor member attendance and class participation.</p>
+                    <a href="{{ url_for('attendance') }}" class="card-link">
+                        View Attendance
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="card">
+                    <h2>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-1 16H9V7h9v14z"/>
+                        </svg>
+                        Reports
+                    </h2>
+                    <p>Generate detailed reports and analytics.</p>
+                    <a href="{{ url_for('reports') }}" class="card-link">
+                        View Reports
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

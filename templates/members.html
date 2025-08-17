@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members - Gym Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('index') }}" class="nav-back">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Back to Dashboard
+        </a>
+        
+        <div class="header">
+            <h1>👥 Members Management</h1>
+            <p>Manage your gym members and their information</p>
+        </div>
+        
+        <div class="content-section">
+            <h2 class="section-title">Current Members</h2>
+            
+            {% if members_data %}
+                <div class="data-list">
+                    {% for member in members_data %}
+                    <div class="data-item">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div><strong>ID:</strong><span>{{ member[0] }}</span></div>
+                            <div><strong>Name:</strong><span>{{ member[1] }}</span></div>
+                            <div><strong>Phone:</strong><span>{{ member[2] }}</span></div>
+                            <div><strong>Email:</strong><span>{{ member[3] }}</span></div>
+                            <div><strong>Membership:</strong><span>{{ member[4] }}</span></div>
+                            <div><strong>Join Date:</strong><span>{{ member[5] }}</span></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No members found</h3>
+                    <p>Start by adding your first member below.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="content-section">
+            <div class="form-section">
+                <h2 class="form-title">Add New Member</h2>
+                <form action="{{ url_for('insert_member') }}" method="POST">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Enter member's full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="Enter email address" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-input" placeholder="Enter phone number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="membership_type" class="form-label">Membership Type</label>
+                        <input type="text" id="membership_type" name="membership_type" class="form-input" placeholder="e.g., Premium, Basic, Student" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="join_date" class="form-label">Join Date</label>
+                        <input type="date" id="join_date" name="join_date" class="form-input" required>
+                    </div>
+                    
+                    <button type="submit" class="form-submit">Add Member</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
